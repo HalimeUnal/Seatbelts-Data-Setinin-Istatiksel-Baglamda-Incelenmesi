@@ -1,0 +1,323 @@
+---
+title: "Seatbelts"
+toc: true
+author:
+  Sude Özeren 20255507
+  Halime Ünal 20255010
+  İrem Nisa Kutlu 21255019
+  Beyza Göktürk 21255021
+  Mevlüde Türkmensoy 21255024
+number-sections: true
+highlight-style: pygments
+format:
+  html: 
+    code-fold: false
+    html-math-method: katex
+    code-overflow: wrap
+crossref:
+  chapters: true
+  fig-title: '**Şekil**'
+  fig-labels: arabic
+  title-delim: "**.**"
+  tbl-title: '**Tablo**'
+editor: source
+---
+
+## Pamukkale Üniversitesi
+
+Endüstri Mühendisliği Olasılık ve İstatistik Dersi Proje Ödevi
+
+Grup Adı: Ocean7
+
+Sude Özeren 20255507
+
+Halime Ünal 20255010
+
+İrem Nisa Kutlu 21255019
+
+Beyza Göktürk 21255021
+
+Mevlüde Türkmensoy 21255024
+
+# Veri Seti
+
+Veri araştırma, gözlem, deney, sayım ve ölçüm yoluyla elde edilen bilgilerin kolay analiz edilebilmesi için bir araya toplanmasıdır.
+
+Projemizde kullanmış olduğumuz 'Seatbelts' verisi R studio programı üzerinden alınmıştır.
+
+Bu veri setini kullanmamızdaki amaç artan trafik kazalarındaki ölümlerin bir sebebi olan ehliyet kemeri takmama sorununu ele almaktır. Veri seti içerisindeki ölen sürücüler, toplam sürücü sayıları, kazaya bağlı yan koltukta ve arka koltuktaki kişilerin ölüm sayıları ve 1983'te çıkarılan emniyet kemeri takma zorunluluğu yasasından öncesi ve sonrasındaki ölüm oranlarında oluşan değişimi inceleyerek yasanın önemini vurgulamaktır.
+
+Veriler incelenirken istatistiki veriler; ortalama, medyan, standart sapma, çeyreklikler hesaplanmış olup bunun yanında histogram grafiği, çubuk grafiği, kutu grafiği ve serpme grafiği ile elde edilen veriler şematize edilmiştir.
+
+## Konu
+
+Büyük Britanya'da 1969 Ocak ile 1984 Aralık arasında ölen veya ciddi şekilde yaralanan araba sürücülerinin aylık toplamlarını veren bir zaman serisidir. Emniyet kemeri takma zorunluluğu 31 Ocak 1983'te getirilmiştir.
+
+# 1) TANIMLAYICI İSTATİSTİK
+
+# İstatistiklerin Hesaplanması
+
+```{r}
+data(Seatbelts)
+```
+
+Seatbelts veri seti data frame' e şu şekilde aktarılır:
+
+```{r}
+data(Seatbelts)
+Seatbelts = data.frame(as.matrix(Seatbelts), date = time(Seatbelts))
+```
+
+Bu veri setindeki değişkenlere ait ilk 6 gözlem şunlardır:
+
+```{r}
+head(Seatbelts)
+```
+
+Seatbelts de her bir verinin minimum, 1.çeyrek, medyan, ortalama, 3.çeyrek ve maksimum değerleri bunlardır:
+
+```{r}
+summary(Seatbelts)
+```
+
+Standart sapma ile verilerin ne kadarının ortalamaya yakın olduğunu buluruz. Eğer standart sapma küçükse veriler ortalamaya yakın yerlerde dağılmışlardır. Bunun tersi olarak standart sapma büyükse veriler ortalamadan uzak yerlerde dağılmışlardır. Bütün değerler aynı olursa standart sapma sıfır olur. Veri setindeki bazı verilerin standart sapması şu şekilde elde edilir:
+
+```{r}
+sd(Seatbelts$DriversKilled)
+sd(Seatbelts$drivers)
+sd(Seatbelts$front)
+sd(Seatbelts$rear)
+sd(Seatbelts$VanKilled)
+```
+
+Varyans kavramı dağılıma ait herbir değerin dağılımın ortalamasından ne kadar uzak olduğuyla ilgilidir. Varyans söz konusu sapmaların ortalama değerini ölçmektedir. R studio içinde bu şekilde bulunur:
+
+```{r}
+var(Seatbelts$DriversKilled) 
+```
+
+Frekans bir verinin gözlenme sıklığı olarak adlandırılır. Kullanmış olduğumuz veri setine ait frekans tabloları aşağıdaki gibidir:
+
+```{r}
+tablo = table(Seatbelts$DriversKilled) 
+tablo=as.data.frame(tablo)    
+tablo
+```
+
+Bu frekans tablosu araba kazalarında ölen sürücü sayılarını göstermektedir. Var1 kısmı verileri ifade ederken Freq sütunu ise o verinin kaç defa tekrarlanmış olduğunu gösterir.
+
+```{r}
+tablo = table(Seatbelts$VanKilled) 
+tablo=as.data.frame(tablo)    
+tablo
+```
+
+Yukarıda görmüş olduğumuz frekans tablosu ise kamyonet gibi hafif yük taşıyan araçların yapmış oldukları kazalarda ölen sürücü sayılarının frekansını göstermektedir.
+
+Bu iki frekans tablosunu karşılaştırdığımız zaman ölen araba kullanıcılarının sayılarında daha fazla çeşitlilik olduğunu ve verilerin tekrarlanma sıklığının oldukça az olduğunu görürüz. Fakat ikinci tabloya baktığımızda 16 farklı sayıda veri bulunmakla birlikte bu verilerin tekrarlanması birinci tabloya göre oldukça fazladır.
+
+```{r}
+tablo = table(Seatbelts$law) 
+tablo=as.data.frame(tablo)    
+tablo
+```
+
+Son olarak üçüncü frekans tablomuzda ise emniyet kemeri takma zorunluluğunun olmadığı dönem "0" ile emniyet kemeri takma zorunluluğunun getirildiği dönem ise "1" ile ifade edilmiştir. Veri setimizde yasadan önce toplanmmış olan 169 veri ve yasa sonrası toplanan 23 veri olduğu görülmektedir.
+
+# Grafiklerin Oluşturulması
+
+## Çubuk Grafiği
+
+Bu kodla beraber ölen sürücülerin ne kadar fazla olduğunu çubuk grafiğinde görselleştirerek anlayabiliriz.
+
+```{r}
+barplot(Seatbelts$DriversKilled,xlab = "Toplam Sürücü Sayısı", 
+        ylab = "Ölen Sürücü Sayısı", names.arg = Seatbelts$drivers, 
+        col = "Blue", 
+        main = "Sürücülerin Tamamına Oranla Ölen Sürücü Sayısı")
+```
+
+Toplam sürücü sayısının ölen sürücü sayısına oranını her ne kadar değişken olsa da yüksek oranlarda seyretiğini grafiğine bakarak anlayabiliriz. Emniyet kemerinin zorunlu yapıldığı yasadan sonra ölüm oranlarında bir düşüş yaşanmıştır fakat son dönemlerde yasaya rağmen ölen sürücü sayısında artış olduğunu gözlemleyebiliriz.
+
+Aşağıdaki grafikte ise kamyonet sürücülerinin toplam sürücü sayısına oranla ölüm sayıları gösterilmiştir.
+
+```{r}
+barplot(Seatbelts$VanKilled,xlab = "Toplam Sürücü Sayısı", 
+        ylab = "Kamyonet Kullanan Ölen Sürücü Sayısı", names.arg = Seatbelts$drivers, 
+        col = "Blue", 
+        main = "Sürücülerin Tamamına Oranla Ölen Sürücü Sayısı")
+```
+
+Kamyonet kullanan sürücülerin ölüm oranları, toplam sürücü sayısına oranla en başta çok yüksekken bu oran giderek düşmüştür. Grafiğin sonlarına doğru olan azalmanın sebebi ise emniyet kemeri yasasının getirilmiş olmasıdır. Bu yasadan sonra ağır vasıta araçların sürücü ölüm oranının azalması grafikte de görüldüğü üzere fazlasıyla azalmıştır.
+
+Ülkece belirlenen yasayla beraber ölen sürücü sayısında belirli bir değişim gözlemlenmiştir. Yasadan önce ve sonraki ölümleri aşağıdaki çubuk grafiğiyle gösterebiliriz.
+
+```{r}
+barplot(Seatbelts$DriversKilled, xlab = "Yasaya Göre", ylab = "Ölen Sürücü Sayısı", 
+        names.arg = Seatbelts$law,
+        main = "Yasaya Göre Ölen Sürücü Sayısı")   
+```
+
+31 Ocak 1983'te çıkarılan yasa ile emniyet kemeri takma zorunluluğu getirilmiştir.Yukarıdaki grafiğe bakıldığında "0" yasadan önceki dönemi, "1" yasadan sonraki dönemi ifade etmektedir. Grafikten de anlaşılacağı üzere yasadan önceki dönemde ölüm sayıları 150'yi aşkındır. Bu yüzden oldukça yoğun bir görüntü oluşmuştur. Yasadan sonraki kısımda ise oranlar oldukça azalmış neredeyse 150'ye dahi ulaşamamıştır.
+
+Bu üç çubuk grafiğini vermemizin nedeni öncelikle ilk grafiği oluşturarak sürücülerin tamamına oranla ölen sürücü sayısını göstermekti. İkinci grafiği kullanarak kamyonet gibi hafif yük taşıyan araçların yapmış oldukları kazalarda ölen sürücülerin oranlarını göstererek daha spesifik bir grafik elde etmiş olduk. Son olarak yasa öncesi ve yasa sonrasındaki ölüm oranlarıyla çubuk grafiğini çeşitlendirmiş olduk. \## Serpme Grafiği
+
+## Serpme Grafiği
+
+Aylara göre ölüm sayılarının serpme grafiği ile gösterimi şu şekildedir:
+
+```{r}
+plot((Seatbelts$date %% 1) * 12 + 1, Seatbelts$DriversKilled, 
+     xlab = "Aylar", col=Seatbelts$law + 2)
+```
+
+Aylara göre ölen sürücülerin serpme grafiği ile yılın ilk aylarında ölen sürücü sayısının ortalama seyrettiğini daha sonra kısa bir düşüş yaşayıp yaz aylarında tekrar arttığını görebiliriz. Ölen sürücülerin en yüksek seyrettiği ayların sonbahar, kış ayları olduğu göz önüne alındığında mevsimlerin kazalarda etkisi açıkça görülmektedir. Ayrıca grafikte bulunan yeşil renkler yasadan sonraki ölüm sayılarını belirtirken kırmızı renkler ise yasadan önceyi ifade eder. Bu durumda yasadan sonra ölüm sayısının gözle görülür bir azalış yaşadığını anlayabiliriz.
+
+Yıllara göre ölüm sayılarının serpme grafiği ile gösterimi şu şekildedir:
+
+```{r}
+plot(Seatbelts$date, Seatbelts$DriversKilled, col=(Seatbelts$law+2)) 
+```
+
+Yıllara göre serpme grafiğinde ise yasadan önceki ve sonraki ölüm sayısı dağılımlarını açıkça görebiliriz. Bir önceki grafikte de söylediğimiz gibi yasadan sonrayı yeşil noktalar, kırmızı noktalar ise yasadan önceyi gösterir. Yasanın çıktığı 1983 yılından itibaren ölüm sayısında bariz azalmalar olmuştur. Böylece emniyet kemerinin etkisinin önemi bir kez daha gözlemlenir.
+
+## Histogram Grafiği
+
+Ölen sürücü sayılarına göre histogram grafiği aşağıdaki gibidir:
+
+```{r}
+hist(Seatbelts$DriversKilled, main = "Ölen Sürücü Sayılarına göre Histogram Grafiği",
+     xlab= "Ölen Sürücü Sayısı", ylab = "Frekans", breaks=20, 
+     col = "Blue", ylim = c(0,25))  
+```
+
+Histogram grafiğine bakıldığında aylık ölüm sayılarının frekansı grafikleştirilmiştir. Ölüm sayısının 100 ile 120 arasında daha sık tekrarlandığı yani aylık ölümlerin 100 ile 120 arasında değişmesinin diğer değerelere göre oldukça fazla olduğu görülmektedir.
+
+# 2) ÇIKARIMSAL İSTATİSTİK
+
+## Bir Anakütle Ortalaması İçin Hipotez Testleri
+
+HİPOTEZ 1
+
+1969 yılında kanundan önce kamyonet sürücülerinin ortalama ölüm sayısının 14 den fazla olduğu iddia edilmektedir. Bu gözlemlere bakılarak aşağıdaki sonuçlar elde edilmiştir. %5 anlam düzeyinde bu iddia doğru mudur? Normal dağılım olduğunu varsayınız.
+
+H0 : M = 14
+
+H1 : M \> 14
+
+```{r}
+Ölümsayısı=c(12,6,12,8,10,13,11,6,10,16,13,14)
+t.test(x=Ölümsayısı, mu=14, alternative='g', conf.level = 0.95)
+```
+
+p-value = 0.9973 \> 0.05 olduğu için H0 reddedilemez.
+
+HİPOTEZ 2
+
+1984 yılında kanundan sonra kamyonet sürücülerinin ortalama ölüm sayısının 6 dan fazla olduğu iddia edilmektedir. Bu gözlemlere bakılarak aşağıdaki sonuçlar elde edilmiştir. %5 anlam düzeyinde bu iddia doğru mudur? Normal dağılım olduğunu varsayınız.
+
+H0 : M = 6
+
+H1 : M \> 6
+
+```{r}
+ölümsayısı=c(5,4,6,6,7,5,7,7,4,7)
+t.test(x=ölümsayısı, mu=6, alternative='g', conf.level = 0.95)
+```
+
+p-value = 0.6903 \> 0.05 olduğu için H0 reddedilemez.
+
+Yukarıda ortaya koyulan iki hipotez karşılaştırıldığında hipotezler arasındaki en büyük fark emniyet kemeri kanununun yürürlükte olup olmamasıdır. Birinci hipotez ele alındığında kamyonet tipi araçlardaki ortalama ölüm sayısı M = 14 için reddedilemez çıkmıştır. İkinci hipotezde ise M = 6 için reddedilemez çıkmıştır. Yani bu iki hipotez karşılaştırıldığında emniyet kemeri kanunundan önce 1969 yılındaki ortalama ölüm sayıları kanundan sonra 1984 yılındaki ortalama ölüm sayısından oldukça fazladır. Bu durumda emniyet kemerinin ölüm sayılarına etkisi açıkça gözlemlenmektedir.
+
+## İki Anakütle Ortalaması İçin Hipotez Testleri
+
+HİPOTEZ 1
+
+Bu hipotezde binek araç ve kamyonetlerdeki ölüm sayıları aşağıdaki gibidir. İki farklı araç için ilk on iki gözlem incelenmiştir. Araç tipine bağlı olarak ölüm sayıları arasında bir fark olup olmadığını %5 anlam düzeyinde test ediniz. Normal dağılım olduğunu varsayınız.
+
+H0 : M1 = M2
+
+H1 : M1 =! M2
+
+Anakütle varyansları eşit değil;
+
+```{r}
+Binekaraç=c(107,97,102,87,119,106,110,106,107,134,147,180)
+Kamyonet=c(12,6,12,8,10,13,11,6,10,16,13,14)
+t.test(x=Binekaraç , y=Kamyonet , alternative = 't' , mu=0, conf.level = 0.95 , var.equal = FALSE )
+```
+
+p-value = 1.386e-08 \< 0.05 olduğu için H0 ret
+
+Anakütle varyansları eşit;
+
+```{r}
+Binekaraç=c(107,97,102,87,119,106,110,106,107,134,147,180)
+Kamyonet=c(12,6,12,8,10,13,11,6,10,16,13,14)
+t.test(x=Binekaraç , y=Kamyonet , alternative = 't' , mu=0, conf.level = 0.95 , var.equal = TRUE )
+```
+
+p-value = 1.354e-12 \< 0.05 olduğu için H0 ret
+
+Bu hipotezde araç tiplerine bağlı olarak ölüm sayıları karşılaştırılmıştır. Yapılan testler sonucunda H0 = ret bulunmuştur. Yani araç tiplerine bağlı olarak ölüm sayıları arasında anlamlı bir fark olduğu sonucuna varılmıştır. Bu durumda H1 hipotezinin test edilmesi gereklidir. Aşağıda H1 hipotezinin test edilmiş hali HİPOTEZ 2 şeklinde yer almaktadır.
+
+HİPOTEZ 2
+
+Binek araçlardaki ölüm sayısı kamyonetlerdeki ölüm sayısından büyüktür. %5 anlam düzeyinde bu iddia doğru mudur? Normal dağılım olduğunu varsayınız.
+
+H0: Mu_1 = Mu_2
+
+H1: Mu_1 \> Mu_2
+
+```{r}
+t.test(x=Seatbelts$DriversKilled,y=Seatbelts$VanKilled, alternative="g", 
+       mu=0, conf.level=0.95, var.equel= TRUE)
+```
+
+P değeri = 2.2e-16 \< 0.05 olduğu için H0 ret.
+
+HİPOTEZ 1 den rehber alınarak HİPOTEZ 2 ortaya konulmuştur. HİPOTEZ 2 de tüm gözlemler ele alınmıştır. Bu durumda binek araçlardaki ortalama ölüm sayısının kamyonetlere göre büyük olduğu ortaya çıkmıştır. Bunun birkaç sebebi olabilir:
+
+1\) Binek araçların kamyonetlere göre kullanım sıklığının daha fazla olması
+
+2\) Kamyonetlerin ağırlık olarak daha fazla olması ve yük taşıyabilmesinden dolayı binek araçlara göre hızlarının daha yavaş olması
+
+Bu sebeplerden dolayı binek araçlardaki ölüm sayılarının kamyonetlerinkinden fazla olduğu düşünülebilir.
+
+## Eşli Gözlemler
+
+HİPOTEZ 1
+
+Emniyet kemeri kanunundan sonra binek araçlarda ölüm sayılarında bir azalma olduğu iddia edilmektedir. Bu iddiayı test etmek için kanundan önce son 10 kayıt ile kanundan sonra ilk 10 kayıt arasında karşılaştırma yapılmıştır. % 5 anlam düzeyinde bu iddia doğru mudur? Normal dağılım olduğunu varsayınız.
+
+H0 : M = 0
+
+H1 : M \> 0
+
+```{r}
+Kanundanönce=c(120,152,138,137,125,122,115,103,108,131)
+Kanundansonra=c(95,100,89,82,89,60,84,113,126,122)
+t.test(x=Kanundanönce, y=Kanundansonra, mu=0, alternative ='g', conf.level = 0.95, paired = TRUE)
+```
+
+p-value = 0.004434 \< 0.05 olduğu için H0 ret.
+
+Bu hipotez testine bakarak emniyet kemeri kanununa bağlı olarak ölüm sayılarında bir azalma olduğunu söyleyebiliriz.
+
+HİPOTEZ 2
+
+Emniyet kemeri kanunundan sonra kamyonetlerdeki ölüm sayılarında bir azalma olduğu iddia edilmektedir. Bu iddiayı test etmek için kanundan önce son 10 kayıt ile kanundan sonra ilk 10 kayıt arasında karşılaştırma yapılmıştır. % 5 anlam düzeyinde bu iddia doğru mudur? Normal dağılım olduğunu varsayınız.
+
+H0 : M = 0
+
+H1 : M \> 0
+
+```{r}
+KanundanÖnce=c(4,4,8,8,3,7,12,2,7,8)
+KanundanSonra=c(3,2,6,3,7,6,8,8,4,3)
+t.test(x=KanundanÖnce, y=KanundanSonra, mu=0, alternative ='g', conf.level = 0.95, paired = TRUE)
+```
+
+p-value = 0.1448 \> 0.05 olduğu için H0 reddedilemez.
+
+Bu hipotez testine bakarak emniyet kemeri kanununa bağlı olarak ölüm sayılarında bir azalma olmadığı gözlemlenmiştir. Yani emniyet kemeri kanunu kamyonetler üzerinde fazla bir etki oluşturmadığı söylenebilir.
